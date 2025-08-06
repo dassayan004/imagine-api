@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserInput, UpdateUserInput } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { omit } from 'lodash';
-import { ErrorMessage } from '@/enum';
 import { UserResponse } from '@/types';
+import { UserNotFoundError } from '@/filters/errors';
 
 @Injectable()
 export class UsersService {
@@ -23,18 +23,19 @@ export class UsersService {
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepo.findOneBy({ id });
-    if (!user) throw new NotFoundException(ErrorMessage.UserNotFound);
+    if (!user) throw new UserNotFoundError();
+
     return user;
   }
 
   async findOneByEmail(email: string): Promise<User> {
     const user = await this.userRepo.findOneBy({ email });
-    if (!user) throw new NotFoundException(ErrorMessage.UserNotFound);
+    if (!user) throw new UserNotFoundError();
     return user;
   }
 
   async update(id: number, input: UpdateUserInput): Promise<User> {
-    const user = await this.findOne(input.id);
+    const user = await this.findOne(id);
     Object.assign(user, input);
     return this.userRepo.save(user);
   }

@@ -3,6 +3,7 @@ export enum PostgresErrorCode {
 }
 
 export enum ErrorMessage {
+  InternalServerError = 'An internal server error occurred.',
   InvalidCredentials = 'Invalid credentials provided.',
   UserAlreadyExists = 'A user with this email already exists.',
   SecretsNotFound = 'Required secrets not found.',

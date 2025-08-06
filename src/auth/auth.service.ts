@@ -1,17 +1,17 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterDto } from './dto/register.input';
 import bcrypt from 'bcryptjs';
-import { ErrorMessage, PostgresErrorCode, Role } from '@/enum';
+import { PostgresErrorCode, Role } from '@/enum';
 import { UsersService } from '@/users/users.service';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserInput } from '@/users/dto';
 import { AuthResponse, LoginDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
+import {
+  BaseGraphQLError,
+  InvalidCredentialsError,
+  UserAlreadyExistsError,
+} from '@/filters/errors';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +32,7 @@ export class AuthService {
     const isValid = await this.compare(password, hashedPassword);
 
     if (!isValid) {
-      throw new BadRequestException(ErrorMessage.InvalidCredentials);
+      throw new InvalidCredentialsError();
     }
     return true;
   }
@@ -50,10 +50,14 @@ export class AuthService {
       return await this.usersService.create(createUser);
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new ConflictException(ErrorMessage.UserAlreadyExists);
+        throw new UserAlreadyExistsError();
       }
 
-      throw new InternalServerErrorException(error);
+      throw new BaseGraphQLError(
+        error,
+        'INTERNAL_SERVER_ERROR',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 

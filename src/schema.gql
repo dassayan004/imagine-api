@@ -21,7 +21,7 @@ type Mutation {
   loginUser(loginDto: LoginDto!): AuthResponse!
   registerUser(registerDto: RegisterDto!): User!
   removeUser(id: Int!): Boolean!
-  updateUser(updateUserInput: UpdateUserInput!): User!
+  updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
@@ -43,7 +43,6 @@ enum Role {
 
 input UpdateUserInput {
   email: String
-  id: Int!
   name: String
   password: String
   roles: Role
