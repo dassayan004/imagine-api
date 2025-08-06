@@ -1,10 +1,11 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { UpdateUserInput } from './dto';
 
 import { UseGuards } from '@nestjs/common';
 import { GqlJWTAuthGuard } from '@/auth/guard';
+import { JWTUser } from '@/decorators/current-user.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -16,15 +17,15 @@ export class UsersResolver {
   }
 
   @UseGuards(GqlJWTAuthGuard)
-  @Query(() => User, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.usersService.findOne(id);
+  @Query(() => User, { name: 'getMe' })
+  findMe(@JWTUser() user: User) {
+    return user;
   }
 
   @UseGuards(GqlJWTAuthGuard)
   @Mutation(() => User)
   updateUser(
-    @Args('id', { type: () => Int }) id: number,
+    @JWTUser('id') id: number,
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
   ) {
     return this.usersService.update(id, updateUserInput);
@@ -32,9 +33,7 @@ export class UsersResolver {
 
   @UseGuards(GqlJWTAuthGuard)
   @Mutation(() => Boolean)
-  async removeUser(
-    @Args('id', { type: () => Int }) id: number,
-  ): Promise<boolean> {
+  async removeUser(@JWTUser('id') id: number): Promise<boolean> {
     return this.usersService.remove(id);
   }
 }

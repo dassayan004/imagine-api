@@ -20,12 +20,12 @@ input LoginDto {
 type Mutation {
   loginUser(loginDto: LoginDto!): AuthResponse!
   registerUser(registerDto: RegisterDto!): User!
-  removeUser(id: Int!): Boolean!
-  updateUser(id: Int!, updateUserInput: UpdateUserInput!): User!
+  removeUser: Boolean!
+  updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
-  user(id: Int!): User!
+  getMe: User!
   users: [User!]!
 }
 

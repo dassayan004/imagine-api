@@ -1,11 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserInput, UpdateUserInput } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { omit } from 'lodash';
 import { UserResponse } from '@/types';
-import { UserNotFoundError } from '@/filters/errors';
+import {
+  BaseGraphQLError,
+  UserAlreadyExistsError,
+  UserNotFoundError,
+} from '@/filters/errors';
+import { PostgresErrorCode } from '@/enum';
 
 @Injectable()
 export class UsersService {
@@ -35,9 +40,21 @@ export class UsersService {
   }
 
   async update(id: number, input: UpdateUserInput): Promise<User> {
-    const user = await this.findOne(id);
-    Object.assign(user, input);
-    return this.userRepo.save(user);
+    try {
+      const user = await this.findOne(id);
+      Object.assign(user, input);
+      return await this.userRepo.save(user);
+    } catch (error) {
+      if (error?.code === PostgresErrorCode.UniqueViolation) {
+        throw new UserAlreadyExistsError();
+      }
+
+      throw new BaseGraphQLError(
+        error,
+        'INTERNAL_SERVER_ERROR',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async remove(id: number): Promise<boolean> {

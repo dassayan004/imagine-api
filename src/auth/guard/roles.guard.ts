@@ -5,7 +5,8 @@ import { Reflector } from '@nestjs/core';
 import { Role } from '@/enum';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { ROLES_KEY } from '@/decorators/roles.decorator';
-import { RoleNotAllowedError, UnauthorizedError } from '@/filters/errors';
+import { RoleNotAllowedError } from '@/filters/errors';
+import { User } from '@/users/entities/user.entity';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -23,12 +24,9 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles) return true;
 
     const ctx = GqlExecutionContext.create(context);
-    const { user } = ctx.getContext().req;
-    if (!user || !user.roles) {
-      throw new UnauthorizedError();
-    }
+    const { user }: { user: User } = ctx.getContext().req;
 
-    const hasRole = this.matchRoles(requiredRoles, user.roles);
+    const hasRole = this.matchRoles(requiredRoles, [user.roles]);
     if (!hasRole) {
       throw new RoleNotAllowedError();
     }
