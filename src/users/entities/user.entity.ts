@@ -1,4 +1,4 @@
-import { Role } from '@/enum';
+import { Role } from '@/common/enum';
 import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
 
 import {

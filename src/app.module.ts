@@ -2,13 +2,14 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from '@/common/database/database.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { APP_FILTER } from '@nestjs/core';
-import { GrapghQLExceptionFilter } from './filters/exception.filter';
+import { GrapghQLExceptionFilter } from '@/common/filters/exception.filter';
+import { HealthModule } from './health/health.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -25,6 +26,7 @@ import { GrapghQLExceptionFilter } from './filters/exception.filter';
     DatabaseModule,
     UsersModule,
     AuthModule,
+    HealthModule,
   ],
   providers: [
     {

@@ -1,4 +1,4 @@
-import { ErrorMessage } from '@/enum';
+import { ErrorMessage } from '@/common/enum';
 import { BaseGraphQLError } from './base-graphql-error';
 
 export class UserNotFoundError extends BaseGraphQLError {

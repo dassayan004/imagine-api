@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterDto } from './dto/register.input';
 import bcrypt from 'bcryptjs';
-import { PostgresErrorCode, Role } from '@/enum';
+import { PostgresErrorCode, Role } from '@/common/enum';
 import { UsersService } from '@/users/users.service';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserInput } from '@/users/dto';
@@ -11,7 +11,7 @@ import {
   BaseGraphQLError,
   InvalidCredentialsError,
   UserAlreadyExistsError,
-} from '@/filters/errors';
+} from '@/common/filters/errors';
 
 @Injectable()
 export class AuthService {

@@ -4,13 +4,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { omit } from 'lodash';
-import { UserResponse } from '@/types';
+import { UserResponse } from '@/common/types';
 import {
   BaseGraphQLError,
   UserAlreadyExistsError,
   UserNotFoundError,
-} from '@/filters/errors';
-import { PostgresErrorCode } from '@/enum';
+} from '@/common/filters/errors';
+import { PostgresErrorCode } from '@/common/enum';
 
 @Injectable()
 export class UsersService {

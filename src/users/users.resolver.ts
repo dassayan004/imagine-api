@@ -5,7 +5,7 @@ import { UpdateUserInput } from './dto';
 
 import { UseGuards } from '@nestjs/common';
 import { GqlJWTAuthGuard } from '@/auth/guard';
-import { JWTUser } from '@/decorators/current-user.decorator';
+import { JWTUser } from '@/common/decorators/current-user.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {
