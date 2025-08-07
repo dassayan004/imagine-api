@@ -31,7 +31,7 @@ export class HealthController {
           thresholdPercent: 10,
           path: '/',
         }),
-      () => this.ping.isHealthy('nestjs-docs', 'http://localhost:8000/'),
+      () => this.ping.isHealthy('nestjs-docs', 'https://nestjs.com/'),
     ]);
   }
 }
