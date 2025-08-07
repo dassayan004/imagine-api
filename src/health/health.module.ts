@@ -3,11 +3,14 @@ import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 
 import { HealthController } from './health.controller';
-import { PingIndicator } from './indicator/ping.indicator';
 
 @Module({
-  imports: [TerminusModule, HttpModule],
+  imports: [
+    TerminusModule.forRoot({
+      errorLogStyle: 'pretty',
+    }),
+    HttpModule,
+  ],
   controllers: [HealthController],
-  providers: [PingIndicator],
 })
 export class HealthModule {}
